@@ -8,6 +8,7 @@ function App() {
     <div className="App">
 
         <h2>Enter a word to translate it into different languages!</h2>
+        <p>Select the word's language, the result language and click in the button</p>
         <TranslateContainer />
     </div>
   );
