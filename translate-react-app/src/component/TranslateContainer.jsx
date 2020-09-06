@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Validation } from './util/validation';
 import {TextField, Button, List, ListItem, ListItemText, InputLabel, Select, MenuItem } from '@material-ui/core';
 import {languages} from './util/constant';
+import {Translate} from './util/translate';
 
 
 const TranslateContainer = (props) => {
@@ -26,21 +27,20 @@ const TranslateContainer = (props) => {
     }
 
     const onClickButton = () => {
-        console.log('Button clicked');
-    }
 
-    const generateResult = (element) => {
-        if (target !== null && target !== '') {
-            return target.map((value) => {
-                React.cloneElement(element, {
-                    key: value,
-                })
-            })
-        }
-    }
+        fetch(GOOGLE_TRANSLATE_ENDPOINT+'sl='+sourceLang+'&tl='+targetLang+'&q='+source.value, {
+            mode: 'no-cors',
+            method: 'POST',
+            headers: {
+                'Content-Type': CONTENT_TYPE_URLENCODED,
+                "Accept":"application/json",
 
-    const generateItemSource = () => {
-      
+            }
+        })
+        .then(res => res.json())
+        .then((response) => setTarget(response.sentences.trans))
+        .catch((error) => console.log(error));
+        
     }
 
     return <>
@@ -77,7 +77,6 @@ const TranslateContainer = (props) => {
             </Select>
             <br></br><br></br>
 
-
             <Button
                 variant="contained"
                 color="primary"
@@ -87,17 +86,7 @@ const TranslateContainer = (props) => {
                 TRANSLATE
         </Button>
             <br></br><br></br>
-            <p>Result:</p>
-            <List>
-                {generateResult(
-                    <ListItem>
-                        <ListItemText
-                            primary='Single-line item'
-                            secondary='Secondary text'
-                        />
-                    </ListItem>
-                )}
-            </List>
+            <p>Result: <span className='result'>{target}</span></p>
         </div>
     </>
 }
